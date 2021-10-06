@@ -28,6 +28,7 @@ class Program:
     def create_widgets(self):
         self.create_source_dossier_button()
         self.create_tourner_a_droite_button()
+        self.create_tourner_a_gauche_button()
 
     def create_source_dossier_button(self):
         yt_button = Button(self.frame, text="Choisir un dossier",command=self.choisirUnDossier)
@@ -36,6 +37,10 @@ class Program:
     def create_tourner_a_droite_button(self):
         yt_buttonDroite = Button(self.frame,text='Tourner a droite',command=lambda: self.tournerImageDroite(self._srcFolder,self.listeFichier,self._objetCanvas,self._objetCreateImage))
         yt_buttonDroite.pack(pady=25, fill=X)
+
+    def create_tourner_a_gauche_button(self):
+        yt_buttonGauche = Button(self.frame,text='Tourner a gauche',command=lambda: self.tournerImageGauche(self._srcFolder,self.listeFichier,self._objetCanvas,self._objetCreateImage))
+        yt_buttonGauche.pack(pady=30, fill=X)
 
     def creerDictionnnaire(self,listeFichier):
         for i in range(len(listeFichier)):
@@ -71,13 +76,17 @@ class Program:
     def tournerImageDroite(self,scr,listeFichier,listeCanvas,listeObjetCanvas):
 
         for i in range(len(listeFichier)):
-            self.traitementImage(scr,listeFichier,i)
-        
+            self.traitementImage(scr,listeFichier,i,-90)
         self.canvas.delete("all")
-
         self.afficherLesImages(scr,listeFichier)
 
 
+    def tournerImageGauche(self,scr,listeFichier,listeCanvas,listeObjetCanvas):
+
+        for i in range(len(listeFichier)):
+            self.traitementImage(scr,listeFichier,i,90)
+        self.canvas.delete("all")
+        self.afficherLesImages(scr,listeFichier)
 
     def traitementImage(self,scr,listeFichier,index,degree):
         self._img = scr+"/"+listeFichier[index]
