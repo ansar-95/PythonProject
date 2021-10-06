@@ -1,6 +1,8 @@
 import os
 from tkinter import *
 from PIL import ImageTk,Image
+from tkinter import filedialog
+=======
 import tkFileDialog
 import time
 
@@ -31,7 +33,11 @@ class Program:
     def create_widgets(self):
         self.create_source_dossier_button()
         self.create_tourner_a_droite_button()
+
+        self.renomerToutImages()
+        
         self.create_tourner_a_gauche_button()
+
         #self.create_input_largeur()
         #self.create_input_longueur()
         self.create_redimmension_Composant()
@@ -68,12 +74,63 @@ class Program:
             self._objetCanvas.append(listeFichier[i])
 
     def choisirUnDossier(self):
-        self._srcFolder = tkFileDialog.askdirectory(parent=self._fenetre,initialdir="/user",title='Please select a directory')
+        self._srcFolder = filedialog.askdirectory(parent=self._fenetre,initialdir="/user",title='Please select a directory')
         self.listeFichier = os.listdir(self._srcFolder)
         self.afficherLesImages(self._srcFolder,os.listdir(self._srcFolder))
         self.creerDictionnnaire(self.listeFichier)
 
 
+
+    def renomerToutImages(self):
+        var = StringVar()
+        yt_label_img = Button(self.frame, textvariable=var, relief=RAISED)
+        var.set("Renommer les Images")
+        yt_label_img.pack(pady=25, fill=X)
+        self.renameImages()
+    
+    def renommerPetS(self):
+
+        def changerleP():
+            pr = pref.get()
+            path = os.chdir("C:\\Users\\konaren\\Documents\\image")
+            d=0
+            for images in os.listdir(path):
+                add_image_prefix = pr+"_""Image{}.png".format(d)
+                os.rename(images , add_image_prefix)
+                d = d+1
+        
+        def changerleS():
+            sf = suf.get()
+            path = os.chdir("C:\\Users\\konaren\\Documents\\image")
+            d=0
+            for images in os.listdir(path):
+                add_image_suffix = "Image""_"+sf+"{}.png".format(d)
+                os.rename(images , add_image_suffix)
+                d = d+1
+        
+
+        p1 = Label(self.frame, text='Prefixe des images :')
+        p1.pack(pady=0)
+        pref = StringVar()
+        entree1 = Entry(self.frame, textvariable =pref, width=15)
+        entree1.pack(padx=0, pady=10)
+        
+        
+
+        btn_preffix = Button(self.frame, text='Changer le prefixe' ,command=changerleP)
+        btn_preffix.pack(padx=5, pady=20)
+
+
+
+        p2 = Label(self.frame, text='Suffixe des images :')
+        p2.pack(pady=0)
+        suf = StringVar()
+        entree2 = Entry(self.frame,textvariable =suf, width=15)
+        entree2.pack(padx=0, pady=10)
+       
+        btn_suffixe = Button(self.frame, text='Changer le suffixe',command=changerleS)
+        btn_suffixe.pack(padx=5, pady=5)
+    
 
     def afficherLesImages(self,src,listeFichier):
         p = 0
@@ -81,7 +138,7 @@ class Program:
             v = locals()
             img = src+"/"+i
             image = Image.open(img)
-            image = image.resize((100, 100), Image.ANTIALIAS)
+            image = image.resize((200, 200), Image.ANTIALIAS)
             photo = ImageTk.PhotoImage(image)
             self.dicimg[p] = photo
             #self._objetCanvas.append(Canvas(self.frame,width=200,height=200,bg="white"))
@@ -94,6 +151,25 @@ class Program:
         self.canvas.pack()
             
     
+
+    def tournerImageDroite(self,src,listeFichier):
+
+        for i in listeFichier:
+            img = src+"/"+i
+            image = Image.open(img) 
+            image.rotate(45)
+        
+        self.afficherLesImages(src,listeFichier)
+
+
+    def renameImages(self):
+        path = os.chdir("C:\\Users\\konaren\\Documents\\image")
+        p =0
+        for image in os.listdir(path):
+            new_image_name = "Image{}.png".format(p)
+            os.rename(image , new_image_name)
+            p = p+1
+
     def tournerImageDroite(self,scr,listeFichier,listeCanvas,listeObjetCanvas):
 
         for i in range(len(listeFichier)):
@@ -132,4 +208,3 @@ class Program:
         self._image.save("image/"+listeFichier[index])
         self._photo = ImageTk.PhotoImage(self._image)
         #self.canvas.itemconfig(self._objetCreateImage[index],image=self._photo)
-  
