@@ -81,7 +81,7 @@ class Program:
             v = locals()
             img = src+"/"+i
             image = Image.open(img)
-            image = image.resize((200, 200), Image.ANTIALIAS)
+            image = image.resize((100, 100), Image.ANTIALIAS)
             photo = ImageTk.PhotoImage(image)
             self.dicimg[p] = photo
             #self._objetCanvas.append(Canvas(self.frame,width=200,height=200,bg="white"))
