@@ -2,8 +2,6 @@ import os
 from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import filedialog
-=======
-import tkFileDialog
 import time
 
 #90 tourne limage a gauche
@@ -41,6 +39,10 @@ class Program:
         #self.create_input_largeur()
         #self.create_input_longueur()
         self.create_redimmension_Composant()
+
+        self.renommerPretSuf()
+        self.numeroteImg()
+
     def create_source_dossier_button(self):
         yt_button = Button(self.frame, text="Choisir un dossier",command=self.choisirUnDossier)
         yt_button.pack(pady=25, fill=X)
@@ -88,11 +90,11 @@ class Program:
         yt_label_img.pack(pady=25, fill=X)
         self.renameImages()
     
-    def renommerPetS(self):
+    def renommerPretSuf(self):
 
         def changerleP():
             pr = pref.get()
-            path = os.chdir("C:\\Users\\konaren\\Documents\\image")
+            path = os.chdir("C:\\Users\\nianacoro\\images\\photos")
             d=0
             for images in os.listdir(path):
                 add_image_prefix = pr+"_""Image{}.png".format(d)
@@ -101,7 +103,7 @@ class Program:
         
         def changerleS():
             sf = suf.get()
-            path = os.chdir("C:\\Users\\konaren\\Documents\\image")
+            path = os.chdir("C:\\Users\\nianacoro\\images\\photos")
             d=0
             for images in os.listdir(path):
                 add_image_suffix = "Image""_"+sf+"{}.png".format(d)
@@ -163,12 +165,15 @@ class Program:
 
 
     def renameImages(self):
-        path = os.chdir("C:\\Users\\konaren\\Documents\\image")
+        path = os.chdir("C:\\Users\\nianacoro\\images\\photos")
         p =0
         for image in os.listdir(path):
             new_image_name = "Image{}.png".format(p)
             os.rename(image , new_image_name)
             p = p+1
+        
+
+        
 
     def tournerImageDroite(self,scr,listeFichier,listeCanvas,listeObjetCanvas):
 
@@ -208,3 +213,23 @@ class Program:
         self._image.save("image/"+listeFichier[index])
         self._photo = ImageTk.PhotoImage(self._image)
         #self.canvas.itemconfig(self._objetCreateImage[index],image=self._photo)
+
+    def numeroteImg(self):
+
+        def changerlesN():
+            n = num.get()
+            path = os.chdir("C:\\Users\\nianacoro\\images\\photos")
+            for images in os.listdir(path):
+                add_num_image = "Image"+format(n)+".png"
+                os.rename(images , add_num_image)
+                n = n+1
+               
+        p3= Label(self.frame, text='Edit numero image :')
+        p3.pack(pady=3 ) 
+        
+        num = IntVar() 
+        entreeN = Entry(self.frame,textvariable = num, width=5)
+        entreeN.pack(padx=3, pady=3)
+
+        btn_num = Button(self.frame, text='Changer numero Img',command=changerlesN)
+        btn_num.pack(padx=5, pady=5)
