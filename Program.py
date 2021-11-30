@@ -1,7 +1,7 @@
 import os
 from tkinter import *
+from tkinter import filedialog
 from PIL import ImageTk,Image
-import tkFileDialog
 import time
 
 #90 tourne limage a gauche
@@ -24,17 +24,20 @@ class Program:
         self._image = ""
         self._photo = ""
         self._button = []
-        self._largeur = IntVar() 
-        self._longeur = IntVar() 
+        self._largeur = IntVar()
+        self._longeur = IntVar()
         self.canvas = Canvas(self.frame,width=1000,height=1000,bg="white")
 
     def create_widgets(self):
         self.create_source_dossier_button()
         self.create_tourner_a_droite_button()
         self.create_tourner_a_gauche_button()
+        self.renomerToutImages()
         #self.create_input_largeur()
         #self.create_input_longueur()
         self.create_redimmension_Composant()
+        self.renommerPretSuf()
+        self.numeroteImg()
     def create_source_dossier_button(self):
         yt_button = Button(self.frame, text="Choisir un dossier",command=self.choisirUnDossier)
         yt_button.pack(pady=25, fill=X)
@@ -46,14 +49,14 @@ class Program:
     def create_tourner_a_gauche_button(self):
         yt_buttonGauche = Button(self.frame,text='Tourner a gauche',command=lambda: self.tournerImageGauche(self._srcFolder,self.listeFichier,self._objetCanvas,self._objetCreateImage))
         yt_buttonGauche.pack(pady=30, fill=X)
-    
+
     def create_redimmension_Composant(self):
-        largeur = IntVar() 
+        largeur = IntVar()
         largeur.set(0)
         entree = Entry(self.frame, textvariable=largeur, width=30)
         entree.pack()
 
-        longueur = IntVar() 
+        longueur = IntVar()
         longueur.set(0)
         entree = Entry(self.frame, textvariable=longueur, width=30)
         entree.pack()
@@ -68,16 +71,60 @@ class Program:
             self._objetCanvas.append(listeFichier[i])
 
     def choisirUnDossier(self):
-        self._srcFolder = tkFileDialog.askdirectory(parent=self._fenetre,initialdir="/user",title='Please select a directory')
+        self._srcFolder = filedialog.askdirectory(parent=self._fenetre,initialdir="C:\\Users\\User\\PycharmProjects\\PythonProject\\image",title='Please select a directory')
         self.listeFichier = os.listdir(self._srcFolder)
         self.afficherLesImages(self._srcFolder,os.listdir(self._srcFolder))
         self.creerDictionnnaire(self.listeFichier)
 
+    def renomerToutImages(self):
+        var = StringVar()
+        yt_label_img = Button(self.frame, textvariable=var, relief=RAISED)
+        var.set("Renommer les Images")
+        yt_label_img.pack(pady=25, fill=X)
+        self.renameImages()
+
+    def renommerPretSuf(self):
+
+        def changerleP():
+            pr = pref.get()
+            path = os.chdir("C:\\Users\\User\\PycharmProjects\\PythonProject\\image")
+            d = 0
+            for images in os.listdir(path):
+                add_image_prefix = pr + "_""Image{}.png".format(d)
+                os.rename(images, add_image_prefix)
+                d = d + 1
+
+        def changerleS():
+            sf = suf.get()
+            path = os.chdir("C:\\Users\\User\\PycharmProjects\\PythonProject\\image")
+            d = 0
+            for images in os.listdir(path):
+                add_image_suffix = "Image""_" + sf + "{}.png".format(d)
+                os.rename(images, add_image_suffix)
+                d = d + 1
+
+        p1 = Label(self.frame, text='Prefixe des images :')
+        p1.pack(pady=0)
+        pref = StringVar()
+        entree1 = Entry(self.frame, textvariable=pref, width=15)
+        entree1.pack(padx=0, pady=10)
+
+        btn_preffix = Button(self.frame, text='Changer le prefixe', command=changerleP)
+        btn_preffix.pack(padx=5, pady=20)
+
+        p2 = Label(self.frame, text='Suffixe des images :')
+        p2.pack(pady=0)
+        suf = StringVar()
+        entree2 = Entry(self.frame, textvariable=suf, width=15)
+        entree2.pack(padx=0, pady=10)
+
+        btn_suffixe = Button(self.frame, text='Changer le suffixe', command=changerleS)
+        btn_suffixe.pack(padx=5, pady=5)
 
 
     def afficherLesImages(self,src,listeFichier):
         p = 0
-        for i in listeFichier: 
+        for i in listeFichier:
             v = locals()
             img = src+"/"+i
             image = Image.open(img)
@@ -88,18 +135,27 @@ class Program:
             x = int((p+1)) *200
             image_on_cavas =  self.canvas.create_image(x,25,anchor=NW,image =photo)
             self._objetCreateImage.append(image_on_cavas)
-            
-            
+
+
             p = p +1
         self.canvas.pack()
-            
-    
+
+
     def tournerImageDroite(self,scr,listeFichier,listeCanvas,listeObjetCanvas):
 
         for i in range(len(listeFichier)):
             self.traitementImage(scr,listeFichier,i,-90)
         self.canvas.delete("all")
         self.afficherLesImages(scr,listeFichier)
+
+    def renameImages(self):
+        path = os.chdir("C:\\Users\\User\\PycharmProjects\\PythonProject\\image")
+        p =0
+        for image in os.listdir(path):
+            new_image_name = "Image{}.png".format(p)
+            os.rename(image , new_image_name)
+            p = p+1
+
 
 
     def tournerImageGauche(self,scr,listeFichier,listeCanvas,listeObjetCanvas):
@@ -111,9 +167,9 @@ class Program:
 
     def traitementImage(self,scr,listeFichier,index,degree):
         self._img = scr+"/"+listeFichier[index]
-        self._image = Image.open(self._img) 
+        self._image = Image.open(self._img)
         self._image = self._image.rotate(-90)
-        self._image.save("image/"+listeFichier[index])
+        self._image.save("C:\\Users\\User\\PycharmProjects\\PythonProject\\image\\"+listeFichier[index])
         self._image = self._image.resize((200, 200), Image.ANTIALIAS)
         self._photo = ImageTk.PhotoImage(self._image)
         #self.canvas.itemconfig(self._objetCreateImage[index],image=self._photo)
@@ -123,13 +179,33 @@ class Program:
         for i in range(len(listeFichier)):
             self.redimensionnerTraitement(scr,listeFichier,i,longueur,largeur)
         self.canvas.delete("all")
-        self.afficherLesImages(scr,listeFichier)   
-    
+        self.afficherLesImages(scr,listeFichier)
+
     def redimensionnerTraitement(self,scr,listeFichier,index,longueur,largeur):
+
         self._img = scr+"/"+listeFichier[index]
         self._image = Image.open(self._img)
         self._image = self._image.resize((longueur,largeur), Image.ANTIALIAS)
-        self._image.save("image/"+listeFichier[index])
+        self._image.save("C:\\Users\\User\\PycharmProjects\\PythonProject\\image\\"+listeFichier[index])
         self._photo = ImageTk.PhotoImage(self._image)
-        #self.canvas.itemconfig(self._objetCreateImage[index],image=self._photo)
-  
+        self.canvas.itemconfig(self._objetCreateImage[index],image=self._photo)
+
+    def numeroteImg(self):
+
+        def changerlesN():
+            n = num.get()
+            path = os.chdir("C:\\Users\\User\\PycharmProjects\\PythonProject\\images")
+            for images in os.listdir(path):
+                add_num_image = "Image" + format(n) + ".png"
+                os.rename(images, add_num_image)
+                n = n + 1
+
+        p3 = Label(self.frame, text='Edit numero image :')
+        p3.pack(pady=3)
+
+        num = IntVar()
+        entreeN = Entry(self.frame, textvariable=num, width=5)
+        entreeN.pack(padx=3, pady=3)
+
+        btn_num = Button(self.frame, text='Changer numero Img', command=changerlesN)
+        btn_num.pack(padx=5, pady=5)
